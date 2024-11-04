@@ -1,0 +1,93 @@
+.errorMessageStyle{
+    position: 'fixed';
+    top: '20px';
+    left: '50%';
+    transform: 'translateX(-50%)';
+    background-color: '#ff4444';
+    color: 'white';
+    padding: '12px 24px';
+    border-radius: '8px';
+    display: 'flex';
+    align-items: 'center';
+    gap: '8px';
+    box-shadow: '0 4px 12px rgba(0, 0, 0, 0.15)';
+    /* opacity: passwordError ? 1 : 0; */
+    transition: 'opacity 0.3s ease';
+    /* pointerEvents: passwordError ? 'auto' : 'none'; */
+    /* zIndex: 1000; */
+  }
+
+.buttonBaseStyle {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-family: serif;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+.inputBaseStyle {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: serif;
+    border: 2px solid transparent;
+    background-color: #D3D3C7;
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .titleTagLine{
+    text-align: center;
+    margin-bottom: 40px;
+    transition: all 0.5s ease;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .homePage{ 
+    height: 100vh;
+    background-color: #DDBEA9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    transition: all 0.5s ease;
+  }
+
+  .title{
+    font-size: 48px;
+    margin-bottom: 16px;
+    font-family: serif;
+    position: relative;
+    display: inline-block;
+  }
+
+  .tagLine{
+    font-size: 20px;
+    font-family: serif;
+    opacity: 0.9;
+  }
+
+  .selectionMenu{
+    background-color: rgba(140, 154, 142, 0.9);
+    padding: 24px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+  }
