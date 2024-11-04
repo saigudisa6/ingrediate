@@ -91,3 +91,12 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
   }
+
+  .bottomLine{
+    left: 0;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #8C9A8E, transparent);
+    animation: expandWidth 1s ease-out forwards; 
+    height: 2px;
+    position: absolute;
+  }

@@ -1,9 +1,10 @@
 import { AlertCircle } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Camera, ChevronRight, User, Lock, Loader2, ArrowRight, Mail, UserPlus } from 'lucide-react';
-import bannerPNG from '../public/kitchenBanner.png';
+import bannerPNG from './kitchenBanner.png';
 import styles from './styles/Home.module.css';
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 const HomePage = () => {
@@ -18,7 +19,9 @@ const HomePage = () => {
       <div className={styles.titleTagLine}>
         <h1 className={styles.title}>
           Ingrediate
+          <div className={styles.bottomLine}></div>
         </h1>
+        
         <p className={styles.tagLine}>
           Turning Nothing, Into Something.
         </p>
@@ -93,8 +96,8 @@ const HomePage = () => {
         
       </div>
       <div className="w-full mt-auto">
-          <img src={'.kitchenBanner.png'} alt="Banner" className="w-full h-auto" style={{ objectFit: 'cover' }} />
-        </div>
+        <Image src={bannerPNG} alt="Banner" className="w-full h-auto" style={{ objectFit: 'cover' }} />
+      </div>
     </div>
   );
   
