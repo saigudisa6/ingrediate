@@ -5,11 +5,9 @@ import bannerPNG from './kitchenBanner.png';
 import styles from './styles/Home.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
+import 'tailwindcss/tailwind.css';
 
-import Image from 'next/image';
-
-
-const HomePage = () => {
+const HomePage : React.FC = () => {
   const [isLoginClicked, setIsLoginClicked] = useState(false);
   const [isSignUpClicked, setIsSignUpClicked] = useState(false);
   const [currentPage, setCurrentPage] = useState('login');
@@ -97,13 +95,10 @@ const HomePage = () => {
           
         
       </div>
-      <div className="w-full mt-auto">
-        <Image src={bannerPNG} alt="Banner" className="w-full h-auto" style={{ objectFit: 'cover' }} />
-<<<<<<< HEAD
-      </div>
-=======
+    
+    <div className="w-full mt-auto">
+      <Image src={bannerPNG} alt="Banner" className="w-full h-auto" style={{ objectFit: 'cover' }} />
     </div>
->>>>>>> 79179134f566a3a89fe9ae21d295a7578eda9543
     </div>
   );
   

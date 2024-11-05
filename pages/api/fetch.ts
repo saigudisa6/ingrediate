@@ -9,3 +9,11 @@ export async function getRecipesHandler(ingredients: string) {
                 });
 }
 
+export async function getTranslationHandler(htmlText: string, targetLang: string){
+    return fetch(`http://localhost:5000/translateText?text=${htmlText}&targetLanguage=${targetLang}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    return data
+                });
+}
+

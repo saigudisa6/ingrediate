@@ -42,4 +42,5 @@ next-env.d.ts
 /server/venv
 /server/.env
 
-adept-insight-440805-d9-c19a5a37a7be.json
+/adept-insight-440805-d9-c19a5a37a7be.json
+/server/service-file.json
