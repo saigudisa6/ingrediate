@@ -9,12 +9,12 @@
     border-radius: '8px';
     display: 'flex';
     align-items: 'center';
-    gap: '8px';
+    gap: '20px';
     box-shadow: '0 4px 12px rgba(0, 0, 0, 0.15)';
     /* opacity: passwordError ? 1 : 0; */
     transition: 'opacity 0.3s ease';
     /* pointerEvents: passwordError ? 'auto' : 'none'; */
-    /* zIndex: 1000; */
+    z-index: 1000;
   }
 
 .buttonBaseStyle {
@@ -63,6 +63,8 @@
     justify-content: center;
     padding: 0px;
     transition: all 0.5s ease;
+    padding-top: 210px;
+    /* gap: 20px; */
   }
 
   .title{
