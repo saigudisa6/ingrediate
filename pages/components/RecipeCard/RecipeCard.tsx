@@ -2,7 +2,6 @@ import { colors } from "@/pages/generateRecipes";
 import { StaticImageData } from "next/image";
 import Image  from "next/image";
 import { Recipe } from "@/pages/generateRecipes";
-import DOMPurify from "dompurify";
 
 
 interface RecipeCardProps {
@@ -16,9 +15,9 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe, index, onViewRecipe, toggleFavorite, isFavorite }: RecipeCardProps) {
 
     function cleanHTML(currHtml: string){
-        if(currHtml.length <= 50) return DOMPurify.sanitize(currHtml);
-        console.log(currHtml)
-        return DOMPurify.sanitize(currHtml.slice(0, 200)) + '...';
+        if(currHtml.length <= 50) return currHtml;
+
+        return currHtml.slice(0, 200) + '...';
     }
 
     return (

@@ -12,13 +12,11 @@ import Image from 'next/image';
 import 'tailwindcss/tailwind.css';
 import styles from './styles/Generate.module.css';
 import { StaticImageData } from "next/image";
-import { getRecipesHandler, getTranslationHandler } from './api/fetch';
+import { getRecipesHandler } from './api/fetch';
 
 import bannerPNG from './kitchenBanner.png';
 import Blobs from './components/Blobs/Blobs';
 import RecipeCard from './components/RecipeCard/RecipeCard';
-import DOMPurify from 'dompurify';
-
 
 
 export const colors = {
@@ -30,18 +28,11 @@ export const colors = {
 export interface Recipe{
     title: string;
     description: string;
-    image: string;
-    instructions: string;
+    image: string; // Depending on how you're handling images
+    instructions: string[];
 }
 
 const languages = ['English', 'Spanish', 'French', 'Italian'];
-const langMap: { [key: string]: string } = {};
-
-langMap[languages[0]] =  'en';
-langMap[languages[1]] =  'es';
-langMap[languages[2]] =  'fr';
-langMap[languages[3]] =  'it';
-
 
 const GenerateRecipesPage: React.FC = () => {
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -129,30 +120,9 @@ const GenerateRecipesPage: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  async function translateRecipes(language: string) {
-    let new_recipes: Recipe[] = await Promise.all(recipes.map(async (curr_recipe: Recipe, idx: number) => {
-        let langCode = langMap[language];
-        let translated_title: string = (await getTranslationHandler(curr_recipe.title, langCode)).translatedText;
-        let translated_description: string = (await getTranslationHandler(curr_recipe.description, langCode)).translatedText;
-        let translated_instructions: string = (await getTranslationHandler(curr_recipe.instructions, langCode)).translatedText;
-        return {
-            title: translated_title,
-            description: translated_description,
-            instructions: translated_instructions,
-            image: curr_recipe.image,
-        };
-    }));
-
-    console.log(new_recipes);
-    setRecipes(new_recipes)
-}
-
   const selectLanguage = (language: string) => {
     setSelectedLanguage(language);
-    // setShowRecipes(false);
-  
-    translateRecipes(language);
-  
+    setShowRecipes(false);
     setIsDropdownOpen(false);
   };
 
@@ -182,8 +152,7 @@ const GenerateRecipesPage: React.FC = () => {
             Turning Nothing, Into Something.
           </p>
         </div>
-        <a href='api/auth/logout'>
-          <button
+        <button
             onClick={handleLogoClick}
             className={`p-0 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 transform transition-transform duration-200 ${
               isLogoActive ? 'ring-[#B7B7A4]' : 'ring-transparent'
@@ -196,8 +165,6 @@ const GenerateRecipesPage: React.FC = () => {
           >
             <Image src={logoImage} alt="Logo" className="w-16 h-16" />
           </button>
-        </a>
-        
       </div>
 
 
@@ -319,7 +286,7 @@ const GenerateRecipesPage: React.FC = () => {
             <button onClick={handleCloseModal} className="absolute top-2 right-2 text-xl">✕</button>
             <Image src={selectedRecipe.image} alt={selectedRecipe.title} className="rounded-lg mb-4 w-full h-48 object-cover" />
             <h2 className="text-2xl font-serif mb-2 rounded-lg px-4 py-2" style={{ color: 'Black', backgroundColor: colors.buttonLight }}>Recipe For {selectedRecipe.title}</h2>
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedRecipe.instructions)}}/>
+            <div dangerouslySetInnerHTML={{ __html: selectedRecipe.instructions}}/>
           </div>
         </div>
       )}

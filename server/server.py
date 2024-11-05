@@ -4,23 +4,11 @@ import json
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
-from bs4 import BeautifulSoup
-from google.cloud import translate_v2 as translate
-import base64
 
-load_dotenv()
 app = Flask(__name__)
 CORS(app)
 app.config['RECIPE_KEY'] = os.getenv('RECIPE_KEY')
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./Downloads/adept-insight-440805-d9-c19a5a37a7be.json"
 base_url = 'https://api.spoonacular.com'
-
-# print(app.config["ENCODED_TRANSLATE_JSON"])
-j_data = base64.b64decode(os.getenv("ENCODED_TRANSLATE_JSON")).decode('utf-8')
-with open("service-file.json", "w") as j_file:
-    j_file.write(j_data)
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "service-file.json"
 
 def parse_initial_res(response_list):
 
@@ -57,16 +45,6 @@ def parse_initial_res(response_list):
     
     return parsed_recipes
 
-def get_recipe_info(recipe_id):
-    params = {
-        'apiKey':app.config['RECIPE_KEY'],
-        'includeNutrition':'false'
-    }
-
-    recipe_res = requests.get(f"{base_url}/recipes/{recipe_id}/information", params=params).json()
-
-    return recipe_res
-
 @app.route('/recipes', methods=['GET'])
 def recipes():
     ingredients = request.args.get('ingredients')
@@ -99,21 +77,16 @@ def recipes():
         })
     
     return json.dumps(final_res)
+# 
+def get_recipe_info(recipe_id):
+    params = {
+        'apiKey':app.config['RECIPE_KEY'],
+        'includeNutrition':'false'
+    }
 
-@app.route('/translateText', methods=['GET'])
-def translateText():
-    text = request.args.get('text')
-    target_lang = request.args.get('targetLanguage')
-    
-    # if not text or not target_lang:
-    #     return "ERROR, PLEASE PASS IN TEXT"
-    
-    translate_client = translate.Client()
-    
-    # Translate the text
-    result = translate_client.translate(text, target_language=target_lang)
-    
-    return json.dumps({"translatedText" : result['translatedText']})
+    recipe_res = requests.get(f"{base_url}/recipes/{recipe_id}/information", params=params).json()
+
+    return recipe_res
 
 if __name__ == "__main__":
     app.run(debug=True)
