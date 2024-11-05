@@ -75,7 +75,7 @@ def recipes():
 
     num_results = '5'
     ranking = '2' # 1 for most missing to least, 2 for opposite
-    ignore_pantry = 'false' # ignores basic pantry items such as flour, water, etc
+    ignore_pantry = 'false' # if set, ignores basic pantry items such as flour, water, etc
     
     params = {
         'apiKey':app.config['RECIPE_KEY'],

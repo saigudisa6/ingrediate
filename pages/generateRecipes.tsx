@@ -32,6 +32,8 @@ export interface Recipe{
     description: string;
     image: string;
     instructions: string;
+    missingIngredients: string;
+    ingredientsUsed: string;
 }
 
 const languages = ['English', 'Spanish', 'French', 'Italian'];
@@ -68,8 +70,10 @@ const GenerateRecipesPage: React.FC = () => {
             title:curr_recipe.initialInfo.recipeName,
             description: curr_recipe.moreInfo.summary,
             instructions: curr_recipe.moreInfo.instructions,
-            // image: curr_recipe.initialInfo.image,
-        }
+            image: curr_recipe.initialInfo.image,
+            missingIngredients: curr_recipe.initialInfo.missingIngredients.map((curr: {id: number, name: string}) => {return curr.name}).join(','),
+            ingredientsUsed: curr_recipe.initialInfo.presentIngredients.map((curr: {id: number, name: string}) => {return curr.name}).join(','),
+          }
     })
     console.log(new_recipes)
     setRecipes(new_recipes);
@@ -132,14 +136,18 @@ const GenerateRecipesPage: React.FC = () => {
   async function translateRecipes(language: string) {
     let new_recipes: Recipe[] = await Promise.all(recipes.map(async (curr_recipe: Recipe, idx: number) => {
         let langCode = langMap[language];
-        let translated_title: string = (await getTranslationHandler(curr_recipe.title, langCode)).translatedText;
-        let translated_description: string = (await getTranslationHandler(curr_recipe.description, langCode)).translatedText;
-        let translated_instructions: string = (await getTranslationHandler(curr_recipe.instructions, langCode)).translatedText;
+        let translatedTitle: string = (await getTranslationHandler(curr_recipe.title, langCode)).translatedText;
+        let translatedDescription: string = (await getTranslationHandler(curr_recipe.description, langCode)).translatedText;
+        let translatedInstructions: string = (await getTranslationHandler(curr_recipe.instructions, langCode)).translatedText;
+        let translatedMissingIngredients: string = (await getTranslationHandler(curr_recipe.missingIngredients, langCode)).translatedText
+        let translatedPresentIngredients: string = (await getTranslationHandler(curr_recipe.ingredientsUsed, langCode)).translatedText
         return {
-            title: translated_title,
-            description: translated_description,
-            instructions: translated_instructions,
+            title: translatedTitle,
+            description: translatedDescription,
+            instructions: translatedInstructions,
             image: curr_recipe.image,
+            missingIngredients: translatedMissingIngredients,
+            ingredientsUsed: translatedPresentIngredients
         };
     }));
 
@@ -317,9 +325,11 @@ const GenerateRecipesPage: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="p-8 bg-gray-100 rounded-lg shadow-lg max-w-lg w-full relative" style={{ backgroundColor: colors.buttonBg }}>
             <button onClick={handleCloseModal} className="absolute top-2 right-2 text-xl">✕</button>
-            <Image src={selectedRecipe.image} alt={selectedRecipe.title} className="rounded-lg mb-4 w-full h-48 object-cover" />
+            <Image src={selectedRecipe.image} alt={selectedRecipe.title} width={100} height={32} className="rounded-lg mb-4 w-full h-48 object-cover" />
             <h2 className="text-2xl font-serif mb-2 rounded-lg px-4 py-2" style={{ color: 'Black', backgroundColor: colors.buttonLight }}>Recipe For {selectedRecipe.title}</h2>
             <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(selectedRecipe.instructions)}}/>
+            <div><b>USES:</b> {selectedRecipe.ingredientsUsed}</div>
+            <div><b>MISSING:</b> {selectedRecipe.missingIngredients}</div>
           </div>
         </div>
       )}

@@ -2,7 +2,7 @@ import { colors } from "@/pages/generateRecipes";
 import { StaticImageData } from "next/image";
 import Image  from "next/image";
 import { Recipe } from "@/pages/generateRecipes";
-
+import 'tailwindcss/tailwind.css';
 
 interface RecipeCardProps {
     recipe: Recipe,
@@ -15,9 +15,7 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe, index, onViewRecipe, toggleFavorite, isFavorite }: RecipeCardProps) {
 
     function cleanHTML(currHtml: string){
-        if(currHtml.length <= 50) return currHtml;
-
-        return currHtml.slice(0, 200) + '...';
+        return currHtml.split('.')[0]+'!';
     }
 
     return (
@@ -31,7 +29,7 @@ export default function RecipeCard({ recipe, index, onViewRecipe, toggleFavorite
             minHeight: '450px',
             }}
         >
-            {/* <Image src={recipe.image} alt={recipe.title} width={100} height={32} className="rounded-lg mb-4 object-cover" /> */}
+            <Image src={recipe.image} alt={recipe.title} width={100} height={32} className="w-auto rounded-lg mb-4 object-cover" />
             <h3
             className="text-2xl font-serif mb-2 rounded-lg px-4 py-2"
             style={{ color: 'Black', backgroundColor: colors.buttonLight }}
