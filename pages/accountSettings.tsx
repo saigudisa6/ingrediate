@@ -66,7 +66,7 @@ const AccountSettings: React.FC<AccountSettingsProps> = ({ }) => {
 
   useEffect(() => {
     if(!isLoading && !user){
-      router.push('/')
+      router.push('/generateRecipes')
     } else if (user){
       setUserInfo({
         name: user?.name,
