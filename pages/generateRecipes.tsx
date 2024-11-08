@@ -1,30 +1,17 @@
 import React, { useState } from 'react';
 import logoImage from '../public/img/accountLogo.png';
-import avocadoImage from '../public/img/avocadoToast.jpg';
-import pastaImage from '../public/img/gbChicken.jpg';
-import smoothieImage from '../public/img/bsb.jpg';
-import quinoaSaladImage from '../public/img/qs.jpg';
-import honeyGarlicChickenImage from '../public/img/hgc.jpg';
-import blackBeanTacosImage from '../public/img/bbtacos.jpg';
-import bananaBreadImage from '../public/img/bbread.jpg';
-import shrimpSkilletImage from '../public/img/ss.jpg';
 import Image from 'next/image';
 import 'tailwindcss/tailwind.css';
 import styles from '../styles/Blobs.module.css';
-import { StaticImageData } from "next/image";
 import { addFavorite, getRecipesHandler, getTranslationHandler, removeFavorite, getRecipeById } from './api/fetch';
 
 import bannerPNG from './kitchenBanner.png';
-import Blobs from './components/Blobs/Blobs';
 import RecipeCard from './components/RecipeCard/RecipeCard';
 import DOMPurify from 'dompurify';
 
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { getFavorites } from './api/fetch';
 import CameraDetection from './cameraDetection';
-
-
-
 
 export const colors = {
   background: '#DDBEA9',

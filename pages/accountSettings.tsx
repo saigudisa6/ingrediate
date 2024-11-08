@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Camera, 
-  Heart, 
-  ArrowLeft, 
-  Edit2, 
+  ArrowLeft,
   Check, 
-  ChefHat, 
   Utensils, 
   AlertCircle,
   LogOut

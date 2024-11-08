@@ -1,6 +1,5 @@
-import { AlertCircle } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
-import { Camera, ChevronRight, User, Lock, Loader2, ArrowRight, Mail, UserPlus } from 'lucide-react';
+import React, { useState } from 'react';
+import { Loader2, ArrowRight, UserPlus } from 'lucide-react';
 import bannerPNG from './kitchenBanner.png';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
