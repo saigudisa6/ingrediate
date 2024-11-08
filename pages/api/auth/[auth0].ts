@@ -8,7 +8,7 @@ export default handleAuth({
     }),
 
     logout: handleLogout({
-      returnTo: 'http://localhost:3000', // Change this to your desired redirect URL after logout
+      returnTo: 'https://ingrediate-dsf0mbs5p-saigudisa6s-projects.vercel.app/', // Change this to your desired redirect URL after logout
     }),
 
     async login(req : NextApiRequest, res : NextApiResponse) {
