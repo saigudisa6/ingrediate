@@ -10,14 +10,19 @@ import bananaBreadImage from '../public/img/bbread.jpg';
 import shrimpSkilletImage from '../public/img/ss.jpg';
 import Image from 'next/image';
 import 'tailwindcss/tailwind.css';
-import styles from './styles/Generate.module.css';
+import styles from '../styles/Blobs.module.css';
 import { StaticImageData } from "next/image";
-import { getRecipesHandler, getTranslationHandler } from './api/fetch';
+import { addFavorite, getRecipesHandler, getTranslationHandler, removeFavorite, getRecipeById } from './api/fetch';
 
 import bannerPNG from './kitchenBanner.png';
 import Blobs from './components/Blobs/Blobs';
 import RecipeCard from './components/RecipeCard/RecipeCard';
 import DOMPurify from 'dompurify';
+
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { getFavorites } from './api/fetch';
+import CameraDetection from './cameraDetection';
+
 
 
 
@@ -28,6 +33,7 @@ export const colors = {
 };
 
 export interface Recipe{
+    id: string;
     title: string;
     description: string;
     image: string;
@@ -53,20 +59,25 @@ const GenerateRecipesPage: React.FC = () => {
   const [currentRecipeIndex, setCurrentRecipeIndex] = useState<number>(1);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [selectedRecipe, setSelectedRecipe] = useState<typeof recipes[0] | null>(null);
-  const [favorites, setFavorites] = useState<boolean[]>([false]);
+  const [favorites, setFavorites] = useState<Set<string>>(() => new Set());
   const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [clicked, setClicked] = useState(false);
   const [isLogoActive, setIsLogoActive] = useState(false);
-  const [recipes, setRecipes] = useState<Recipe[]>([])
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [apiLoading, setApiLoading] = useState("Generate Again!");
+
+  const {user, error, isLoading} = useUser();
 
   const handleSubmit = async () => {
     setClicked(true);
+    setApiLoading("Loading...");
+
     let res = await getRecipesHandler(ingredients.join(','))
-    
     let new_recipes = res.map((curr_recipe: any, idx: number) => { // TODO: need to fix the any
         if(!curr_recipe.initialInfo || !curr_recipe.moreInfo) return {}
         return {
+            id: curr_recipe.initialInfo.id,
             title:curr_recipe.initialInfo.recipeName,
             description: curr_recipe.moreInfo.summary,
             instructions: curr_recipe.moreInfo.instructions,
@@ -75,9 +86,11 @@ const GenerateRecipesPage: React.FC = () => {
             ingredientsUsed: curr_recipe.initialInfo.presentIngredients.map((curr: {id: number, name: string}) => {return curr.name}).join(','),
           }
     })
-    console.log(new_recipes)
+
     setRecipes(new_recipes);
     handleGenerateRecipes(); // Call your original function here
+    setApiLoading("Generate Again!")
+    setClicked(false);
   };
 
   const handleLogoClick = () => {
@@ -123,18 +136,60 @@ const GenerateRecipesPage: React.FC = () => {
     setSelectedRecipe(null);
   };
 
-  const toggleFavorite = (index: number) => {
-    const newFavorites = [...favorites];
-    newFavorites[index] = !newFavorites[index];
-    setFavorites(newFavorites);
+  const toggleFavorite = (recipeId: string) => {
+    const newFavs = new Set(favorites)
+    
+    if(newFavs.has(recipeId)){
+      removeFavorite(user?.sub as string, recipeId)
+      newFavs.delete(recipeId);
+    } else {
+      addFavorite(user?.sub as string, recipeId)
+      newFavs.add(recipeId);
+    }
+
+    setFavorites(newFavs);
   };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+
+  async function handleFavorites ()   {
+    setApiLoading("Loading...");
+    let data = await getFavorites(user?.sub as string)
+    
+    const favsList = await Promise.all(data.map(async (curr_fav: {_id: string, favorites: string[]}) => {
+      const new_recipes = await Promise.all(curr_fav.favorites.map(async (currFav: string) => {
+        return await getRecipeById(currFav);
+      }));
+      
+      return new_recipes
+    }));
+    
+    if(!favsList[0]){
+      setApiLoading("No favorites!");
+      return [];
+    }
+    let recipeList = favsList[0].map((curr_recipe: any, idx: number) => { 
+      return {
+          id: curr_recipe.id,
+          title:curr_recipe.title,
+          description: curr_recipe.summary,
+          instructions: curr_recipe.instructions,
+          image: curr_recipe.image,
+          missingIngredients: '',
+          ingredientsUsed: curr_recipe.extendedIngredients.map((curr: any) => {return curr.name}).join(','),
+        }
+    })
+
+    setRecipes(recipeList)
+    setShowRecipes(true);
+    setApiLoading("Generate Recipes");
+  }
+
   async function translateRecipes(language: string) {
-    let new_recipes: Recipe[] = await Promise.all(recipes.map(async (curr_recipe: Recipe, idx: number) => {
+      let new_recipes: Recipe[] = await Promise.all(recipes.map(async (curr_recipe: Recipe, idx: number) => {
         let langCode = langMap[language];
         let translatedTitle: string = (await getTranslationHandler(curr_recipe.title, langCode)).translatedText;
         let translatedDescription: string = (await getTranslationHandler(curr_recipe.description, langCode)).translatedText;
@@ -142,6 +197,7 @@ const GenerateRecipesPage: React.FC = () => {
         let translatedMissingIngredients: string = (await getTranslationHandler(curr_recipe.missingIngredients, langCode)).translatedText
         let translatedPresentIngredients: string = (await getTranslationHandler(curr_recipe.ingredientsUsed, langCode)).translatedText
         return {
+            id: curr_recipe.id,
             title: translatedTitle,
             description: translatedDescription,
             instructions: translatedInstructions,
@@ -151,7 +207,6 @@ const GenerateRecipesPage: React.FC = () => {
         };
     }));
 
-    console.log(new_recipes);
     setRecipes(new_recipes)
 }
 
@@ -162,15 +217,6 @@ const GenerateRecipesPage: React.FC = () => {
     translateRecipes(language);
   
     setIsDropdownOpen(false);
-  };
-
-  const getMessage = () => {
-    if (hasGeneratedOnce) {
-      return ingredients.length === 0 ? 
-        "Add Ingredients!" : 
-        "Click Generate!";
-    }
-    return "Generate Again!";
   };
 
   return (
@@ -190,7 +236,7 @@ const GenerateRecipesPage: React.FC = () => {
             Turning Nothing, Into Something.
           </p>
         </div>
-        <a href='api/auth/logout'>
+        <a href='/accountSettings'>
           <button
             onClick={handleLogoClick}
             className={`p-0 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 transform transition-transform duration-200 ${
@@ -254,14 +300,45 @@ const GenerateRecipesPage: React.FC = () => {
                 color: (clicked && showRecipes) ? 'white' : 'inherit',
               }}
             >
-      Generate Recipes
-    </button>
+              Generate Recipes
+            </button>
+            <button
+              onClick={handleFavorites}
+              className={`py-3 rounded-lg text-lg font-serif transition-all hover:scale-110 hover:shadow-md`}
+              style={{
+                backgroundColor: (clicked && showRecipes) ? 'black' : '#B7B7A4',
+                color: (clicked && showRecipes) ? 'white' : 'inherit',
+                marginTop: '20px',
+              }}
+            >
+              Favorites
+            </button>
+
+             {/* Camera Detection Component */}
+          <div className="mb-4">
+            <CameraDetection 
+              onIngredientsDetected={(detectedIngredients) => {
+                // Add all detected ingredients
+                detectedIngredients.forEach(ingredient => {
+                  if (!ingredients.includes(ingredient)) {
+                    setIngredients(prev => [...prev, ingredient]);
+                  }
+                });
+                // Optionally trigger recipe generation after ingredients are added
+                if (detectedIngredients.length > 0) {
+                  setShowRecipes(false); // Reset recipes view
+                  setHasGeneratedOnce(false); // Reset generation state
+                }
+              }} 
+            />
+          </div>
 
             <div className="relative w-full max-w mt-4">
               <button onClick={toggleDropdown} className="w-full flex justify-between items-center p-2 rounded-lg font-serif hover:scale-110 hover:shadow-md" style={{ backgroundColor: '#B7B7A4' }}>
                 <span>{selectedLanguage}</span>
                 <span>{isDropdownOpen ? '▲' : '▼'}</span>
               </button>
+              
               {isDropdownOpen && (
                 <div className="absolute w-full mt-1 rounded-lg shadow-lg z-10" style={{ backgroundColor: colors.buttonLight }}>
                   {languages
@@ -303,7 +380,7 @@ const GenerateRecipesPage: React.FC = () => {
             >
               {recipes.map((recipe, index) => (
                 <div key={index} className={`w-[28%] flex-shrink-0 px-4 transition-all duration-500 ${index === currentRecipeIndex ? 'scale-105' : 'scale-95'} ${index === currentRecipeIndex ? 'z-20' : 'z-10'}`}>
-                  <RecipeCard recipe={recipe} index={index} onViewRecipe={handleViewRecipe} toggleFavorite={toggleFavorite} isFavorite={favorites[index]}/>
+                  <RecipeCard recipe={recipe} index={index} onViewRecipe={handleViewRecipe} toggleFavorite={toggleFavorite} isFavorite={favorites.has(recipes[index].id)}/>
                 </div>
               ))}
             </div>
@@ -316,9 +393,21 @@ const GenerateRecipesPage: React.FC = () => {
             </button>
           </div>
         ) : (
-            <Blobs hasGeneratedOnce={hasGeneratedOnce} ingredientsLen={ingredients.length}/>
+              <div className="flex justify-center items-center w-full h-full relative pt-60">
+                <div className={styles.floatingBlob}></div>
+                <div className={styles.floatingBlobSupport}>
+                    <p className="text-2xl font-serif text-center" style={{ color: 'black' }}>
+                        {apiLoading}
+                    </p>
+                </div>
+                <div className={styles.blob1}></div>
+                <div className={styles.blob2}></div>
+                <div className={styles.blob3}></div>
+                <div className={styles.blob4}></div>
+                <div className={styles.blob5}></div>
+                <div className={styles.blob6}></div>
+            </div>
         )}
-        
       </div>
 
       {showModal && selectedRecipe && (
@@ -343,3 +432,4 @@ const GenerateRecipesPage: React.FC = () => {
 };
 
 export default GenerateRecipesPage;
+

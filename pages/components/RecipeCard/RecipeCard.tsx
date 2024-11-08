@@ -8,7 +8,7 @@ interface RecipeCardProps {
     recipe: Recipe,
     index: number,
     onViewRecipe(recipe: Recipe): void,
-    toggleFavorite(index: number): void,
+    toggleFavorite(index: string): void,
     isFavorite: boolean,
 }
 
@@ -48,7 +48,7 @@ export default function RecipeCard({ recipe, index, onViewRecipe, toggleFavorite
             </button>
 
             <button 
-                onClick={() => toggleFavorite(index)} 
+                onClick={() => toggleFavorite(recipe.id)} 
                 className="py-2 px-0.001 rounded-lg text-lg font-serif transition-all hover:shadow-md flex-grow" 
                 style={{ color: isFavorite ? 'black' : 'black', backgroundColor: colors.buttonLight }}
             >

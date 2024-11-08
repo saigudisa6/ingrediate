@@ -14,6 +14,43 @@ export async function getTranslationHandler(htmlText: string, targetLang: string
                 .then((response) => response.json())
                 .then((data) => {
                     return data
-                });
+                }); 
+}
+
+export async function getFavorites(userId: string | undefined){
+    return fetch(`http://localhost:5000/getFavs?userId=${userId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data)
+                    return data
+                }); 
+}
+
+export async function addFavorite(userId: string | undefined, recipeId: string){
+    return fetch('http://localhost:5000/addFav', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, recipeId }),
+      });
+}
+
+export async function removeFavorite(userId: string | undefined, recipeId: string){
+    return fetch('http://localhost:5000/removeFav', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, recipeId }),
+      });
+}
+
+export async function getRecipeById(recipeId: string | undefined){
+    return fetch(`http://localhost:5000/getRecipeById?recipeId=${recipeId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    return data
+                }); 
 }
 
