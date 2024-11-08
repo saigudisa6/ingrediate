@@ -63,7 +63,7 @@ const CameraDetection: React.FC<CameraDetectionProps> = ({ onIngredientsDetected
   };
 
   const analyzeImageWithGoogleVision = async (imageFile: File) => {
-    const apiKey = "AIzaSyBf5WWjQksCtxIziKvs7kFq4qjPCf6SoZQ";
+    let apiKey = process.env.VISION_API_KEY;
     if (!apiKey) {
       throw new Error('Google Cloud API key not found');
     }
