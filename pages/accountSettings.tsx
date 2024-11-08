@@ -6,9 +6,7 @@ import {
   AlertCircle,
   LogOut
 } from 'lucide-react';
-import styles from '../styles/AccountFonts.module.css';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { getSession } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
 
 // Color Constants
@@ -25,15 +23,6 @@ const colors = {
   mushroom: '#DEB887',   // Beige
   spice: '#FFD700',      // Yellow
   error: '#ff4444'       // Error red
-};
-
-// Reusable Styles
-const floatingElement = {
-  position: 'absolute',
-  borderRadius: '50% 60% 50% 70%',
-  opacity: '0.3',
-  zIndex: 0,
-  pointerEvents: 'none',
 };
 
 const buttonBaseStyle = {
