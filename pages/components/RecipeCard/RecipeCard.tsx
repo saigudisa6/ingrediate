@@ -18,6 +18,10 @@ export default function RecipeCard({ recipe, index, onViewRecipe, toggleFavorite
         return currHtml.split('.')[0]+'!';
     }
 
+    if(!recipe){
+        return (<div>No Recipes</div>)
+    }
+
     return (
         <div
             className="p-4 rounded-lg shadow-lg bg-gray-100 relative h-full flex flex-col justify-between"
