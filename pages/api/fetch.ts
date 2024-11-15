@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export async function getRecipesHandler(ingredients: string) {
-    return fetch(`/recipes?ingredients=${ingredients}`)
+    return fetch(`/api/flask/recipes?ingredients=${ingredients}`)
                 .then((response) => response.json())
                 .then((data) => {
                     return data

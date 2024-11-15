@@ -58,7 +58,7 @@ def parse_initial_res(response_list):
     
     return parsed_recipes
 
-@app.route('/api/getRecipeById', methods=['GET'])
+@app.route('/api/flask/getRecipeById', methods=['GET'])
 def getRecipeById():
     recipe_id = request.args.get('recipeId')
     return getRecipeInfo(recipe_id)
@@ -73,7 +73,7 @@ def getRecipeInfo(recipe_id):
 
     return recipe_res
 
-@app.route('/api/recipes', methods=['GET'])
+@app.route('/api//flask/recipes', methods=['GET'])
 def recipes():
     ingredients = request.args.get('ingredients')
     if not ingredients:
