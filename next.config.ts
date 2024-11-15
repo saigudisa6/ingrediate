@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   images: {
     domains: ['img.spoonacular.com'],
   },
@@ -8,6 +8,20 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-};
 
+  rewrites: async () => {
+    return [
+      { 
+        "source": "/api/auth/(.*)", 
+        "destination": "/api/auth/$1" 
+      },
+      {
+        source: '/(.*)',
+        destination: '/api/'
+      },
+    ]
+  },
+}
+
+module.exports = nextConfig
 export default nextConfig;
