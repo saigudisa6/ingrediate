@@ -5,8 +5,8 @@
       "destination": "/api/auth/$1"
     },
     {
-      "source": "/api/flask/(.*)",
-      "destination": "/api/app.py"
+      "source": "/api/flask/:path*",
+      "destination": "/api/app.py/:path*"
     }
   ]
   }
