@@ -13,8 +13,8 @@
         },
 
         {
-            "src": "/api/(.*)",
-            "dest": "api/app.py"
+            "source": "/api/(.*)",
+            "destination": "api/app.py"
         }
     ]
   }
