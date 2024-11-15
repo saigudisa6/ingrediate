@@ -73,7 +73,7 @@ def getRecipeInfo(recipe_id):
 
     return recipe_res
 
-@app.route('/api//flask/recipes', methods=['GET'])
+@app.route('/api/flask/recipes', methods=['GET'])
 def recipes():
     ingredients = request.args.get('ingredients')
     if not ingredients:
