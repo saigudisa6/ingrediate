@@ -1,20 +1,15 @@
 {
-    "version": 2,
+    "rewrites": [
+        { "source": "/api/auth/(.*)", "destination": "/api/auth/$1" },
+      {
+        "source": "/api/(.*)",
+        "destination": "/api/app.py"
+      }
+    ],
     "builds": [
       {
         "src": "api/app.py",
         "use": "@vercel/python"
       }
-    ],
-    "routes": [
-        { 
-            "source": "/api/auth/(.*)", 
-            "destination": "/api/auth/$1" 
-        },
-
-        {
-            "source": "/api/(.*)",
-            "destination": "api/app.py"
-        }
     ]
   }
