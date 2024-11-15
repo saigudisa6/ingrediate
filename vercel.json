@@ -38,5 +38,11 @@
             "source": "/api/auth/(.*)", 
             "destination": "/api/auth/$1" 
         }
-    ]
+    ],
+    "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/app.py"
+    }
+  ]
   }
