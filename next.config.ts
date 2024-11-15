@@ -9,18 +9,18 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // rewrites: async () => {
-  //   return [
-  //     { 
-  //       "source": "/api/auth/(.*)", 
-  //       "destination": "/api/auth/$1" 
-  //     },
-  //     {
-  //       source: '/(.*)',
-  //       destination: '/api/'
-  //     },
-  //   ]
-  // },
+  rewrites: async () => {
+    return [
+      { 
+      "source": "/api/auth/(.*)", 
+      "destination": "/api/auth/$1" 
+      },
+      {
+        "source": "/recipes",
+        "destination": "/api/recipes"
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
